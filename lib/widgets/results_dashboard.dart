@@ -343,92 +343,113 @@ class _ResultsDashboardState extends State<ResultsDashboard> {
 
   /// Dedicated Research & Laboratory Validation Card placed below calculation results
   Widget _buildWhyAiSuperiorCard() {
-    return Container(
-      decoration: AppTheme.cardDecoration(),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 460;
+
+        return Container(
+          decoration: AppTheme.cardDecoration(),
+          padding: EdgeInsets.all(isMobile ? 14 : 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: AppTheme.accentBlueLight,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: const Icon(
-                  Icons.science,
-                  color: AppTheme.accentBlue,
-                  size: 18,
-                ),
-              ),
-              const SizedBox(width: 10),
-              const Expanded(
-                child: Text(
-                  'Why AI Model is Superior • Tested on 12 Real Lab Beams',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.primarySteel,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: AppTheme.accentBlueLight,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Icon(
+                      Icons.science,
+                      color: AppTheme.accentBlue,
+                      size: 18,
+                    ),
                   ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AppTheme.accentBlueLight,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppTheme.accentBlueBorder),
-                ),
-                child: const Text(
-                  'Lab R² = 0.8700',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.accentBlue,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Why AI Model is Superior',
+                          style: TextStyle(
+                            fontSize: isMobile ? 13.5 : 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppTheme.primarySteel,
+                          ),
+                        ),
+                        Text(
+                          isMobile
+                              ? 'Tested on 12 Real Lab Beams'
+                              : 'Benchmarked Against 12 Physical Laboratory Beams',
+                          style: TextStyle(
+                            fontSize: isMobile ? 11 : 11.5,
+                            color: AppTheme.mutedSlate,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: AppTheme.accentBlueLight,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppTheme.accentBlueBorder),
+                    ),
+                    child: const Text(
+                      'Lab R² = 0.8700',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.accentBlue,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppTheme.borderSlate),
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '• Validated on 12 Physical Experimental Beams:\n'
+                      'The AI model was trained on 15,000 fiber FE continuum simulations and verified against 12 real published lab-tested GFRP-RC beams, achieving high experimental accuracy (R² = 0.8700).',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppTheme.secondarySteel,
+                        height: 1.45,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '• Recovers Conservatism in ACI 440.1R-15:\n'
+                      'ACI 440.1R assumes an idealized rectangular Whitney stress block, which cuts capacity by ~3.5%–5.0% for concrete crushing. The AI model captures continuous parabolic concrete softening and actual GFRP tensile strain mobilization.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppTheme.secondarySteel,
+                        height: 1.45,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppTheme.borderSlate),
-            ),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '• Validated on 12 Physical Experimental Beams:\n'
-                  'The AI model was trained on 15,000 fiber FE continuum simulations and verified against 12 real published lab-tested GFRP-RC beams, achieving high experimental accuracy (R² = 0.8700).',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppTheme.secondarySteel,
-                    height: 1.45,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  '• Recovers Conservatism in ACI 440.1R-15:\n'
-                  'ACI 440.1R assumes an idealized rectangular Whitney stress block, which cuts capacity by ~3.5%–5.0% for concrete crushing. The AI model captures continuous parabolic concrete softening and actual GFRP tensile strain mobilization.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppTheme.secondarySteel,
-                    height: 1.45,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

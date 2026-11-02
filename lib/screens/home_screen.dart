@@ -122,27 +122,34 @@ class _HomeScreenState extends State<HomeScreen> {
                     Center(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 1320),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              // Optional Validation Alert Banner
-                              if (_validationError != null) ...[
-                                _buildValidationBanner(),
-                                const SizedBox(height: 16),
-                              ],
+                        child: LayoutBuilder(
+                          builder: (context, screenConstraints) {
+                            final isMobile = screenConstraints.maxWidth < 600;
 
-                              // Responsive Layout: 2-column on desktop (>900px), single on mobile
-                              LayoutBuilder(
-                                builder: (context, constraints) {
-                                  final isDesktop = constraints.maxWidth > 900;
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isMobile ? 12 : 20,
+                                vertical: isMobile ? 14 : 24,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  // Optional Validation Alert Banner
+                                  if (_validationError != null) ...[
+                                    _buildValidationBanner(),
+                                    const SizedBox(height: 16),
+                                  ],
 
-                                  if (isDesktop) {
-                                    return Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        // Left Column: Input Console (45% width)
+                                  // Responsive Layout: 2-column on desktop (>900px), single on mobile
+                                  LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      final isDesktop = constraints.maxWidth > 900;
+
+                                      if (isDesktop) {
+                                        return Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            // Left Column: Input Console (45% width)
                                         Expanded(
                                           flex: 45,
                                           child: InputConsole(
@@ -199,11 +206,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ],
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
+                  ),
+                ),
 
-                    // Academic Citation & Conference Footer
+                // Academic Citation & Conference Footer
                     const FooterView(),
                   ],
                 ),

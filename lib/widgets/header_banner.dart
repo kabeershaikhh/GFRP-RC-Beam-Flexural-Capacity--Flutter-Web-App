@@ -17,9 +17,8 @@ class _HeaderBannerState extends State<HeaderBanner> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // 1. Primary Header Bar
+        // 1. Primary Header Bar (Responsive for Mobile & Desktop)
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           decoration: BoxDecoration(
             color: AppTheme.primarySteel,
             boxShadow: [
@@ -30,67 +29,84 @@ class _HeaderBannerState extends State<HeaderBanner> {
               ),
             ],
           ),
-          child: Row(
-            children: [
-              // Custom Civil Engineering GFRP Beam Emblem Logo (exact 1:1 replica of SVG)
-              const BeamEmblemLogo(size: 44),
-              const SizedBox(width: 14),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isMobile = constraints.maxWidth < 600;
+              final isNarrow = constraints.maxWidth < 400;
 
-              // Title & Conference Subtitle
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              return Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 14 : 24,
+                  vertical: isMobile ? 12 : 16,
+                ),
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        const Flexible(
-                          child: Text(
-                            'GFRP-RC Flexural Capacity Analyzer',
+                    // Custom Civil Engineering GFRP Beam Emblem Logo
+                    BeamEmblemLogo(size: isMobile ? 38 : 44),
+                    SizedBox(width: isMobile ? 10 : 14),
+
+                    // Title & Conference Subtitle
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  isMobile
+                                      ? (isNarrow ? 'GFRP-RC Analyzer' : 'GFRP-RC Beam Analyzer')
+                                      : 'GFRP-RC Flexural Capacity Analyzer',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: isMobile ? 16 : 19,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.2,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              // Conference Pill Badge
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isMobile ? 6 : 8,
+                                  vertical: isMobile ? 2 : 3,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.accentBlue,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  isMobile ? 'ICEC 2026' : 'ICEC 2026 Paper',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: isMobile ? 10 : 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            isMobile
+                                ? 'ANN (R² = 0.9982) vs ACI 440.1R-15 Code'
+                                : 'AI Surrogate Model (ANN R²=0.9982) & ACI 440.1R-15 Code Comparison Tool',
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 19,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.3,
+                              color: const Color(0xFF94A3B8),
+                              fontSize: isMobile ? 11 : 12.5,
+                              fontWeight: FontWeight.w400,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        const SizedBox(width: 10),
-                        // Conference Pill Badge
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppTheme.accentBlue,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            'ICEC 2026 Paper',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 3),
-                    const Text(
-                      'AI Surrogate Model (ANN R²=0.9982) & ACI 440.1R-15 Code Comparison Tool',
-                      style: TextStyle(
-                        color: Color(0xFF94A3B8),
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w400,
+                        ],
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
 
