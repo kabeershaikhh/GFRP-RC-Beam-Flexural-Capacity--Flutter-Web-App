@@ -3,6 +3,7 @@ import 'package:gfrp_ann/models/bar_spec.dart';
 import 'package:gfrp_ann/models/beam_input.dart';
 import 'package:gfrp_ann/models/prediction_response.dart';
 import 'package:gfrp_ann/services/api_service.dart';
+import 'package:gfrp_ann/services/pdf_report_service.dart';
 
 void main() {
   group('BarSpec Catalog Tests', () {
@@ -132,6 +133,18 @@ void main() {
       expect(res.aciBenchmark.isConcreteCrushing, isFalse);
       expect(res.aciBenchmark.failureMode, contains('GFRP Rupture'));
       expect(res.aciBenchmark.rhoOverRhoB, 0.335);
+    });
+
+    test('PdfReportService generates valid PDF bytes with %PDF header', () async {
+      final input = BeamInput.presetStandard();
+      final res = await const ApiService().predictCapacity(input, delay: Duration.zero);
+      final pdfBytes = await PdfReportService.generateReportBytes(input: input, response: res);
+
+      expect(pdfBytes, isNotEmpty);
+      expect(pdfBytes.length, greaterThan(1000));
+      // Standard PDF header signature is %PDF-
+      final header = String.fromCharCodes(pdfBytes.take(5));
+      expect(header, '%PDF-');
     });
   });
 }

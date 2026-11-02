@@ -10,6 +10,7 @@ class BarSpec {
     required this.areaMm2,
   });
 
+  String get displayName => designation;
   String get label => '$designation (${diameterMm.toStringAsFixed(2)} mm)';
 
   /// Standard ASTM sizes from #3 to #8 as specified in ICEC 2026 specs

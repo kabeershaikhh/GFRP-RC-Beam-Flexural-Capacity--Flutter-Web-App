@@ -1,12 +1,12 @@
 {
-    "name": "gfrp_ann",
-    "short_name": "gfrp_ann",
+    "name": "GFRP-RC Beam Flexural Capacity Analyzer",
+    "short_name": "GFRP Analyzer",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#1E293B",
+    "theme_color": "#0284C7",
+    "description": "ICEC 2026 AI Surrogate Model (ANN R²=0.9982) & ACI 440.1R-15 Code Comparison Tool",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

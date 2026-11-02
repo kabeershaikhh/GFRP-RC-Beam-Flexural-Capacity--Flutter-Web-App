@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="beamGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="rebarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Steel Squircle -->
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="url(#bgGrad)" stroke="#0284C7" stroke-width="3.5" />
+
+  <!-- Concrete Cross-Section Block -->
+  <rect x="28" y="26" width="72" height="78" rx="8" fill="url(#beamGrad)" stroke="#64748B" stroke-width="2.5" />
+
+  <!-- Stirrup Inner Outline -->
+  <rect x="37" y="35" width="54" height="60" rx="5" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,2" />
+
+  <!-- Top Bars (Anchor Rebar) -->
+  <circle cx="46" cy="44" r="3.5" fill="#64748B" />
+  <circle cx="82" cy="44" r="3.5" fill="#64748B" />
+
+  <!-- Bottom Tensile GFRP Rebar (4 glowing cyan bars) -->
+  <circle cx="45" cy="83" r="5.5" fill="url(#rebarGrad)" stroke="#FFFFFF" stroke-width="1.2" />
+  <circle cx="57.5" cy="83" r="5.5" fill="url(#rebarGrad)" stroke="#FFFFFF" stroke-width="1.2" />
+  <circle cx="70.5" cy="83" r="5.5" fill="url(#rebarGrad)" stroke="#FFFFFF" stroke-width="1.2" />
+  <circle cx="83" cy="83" r="5.5" fill="url(#rebarGrad)" stroke="#FFFFFF" stroke-width="1.2" />
+
+  <!-- Dimension Indicator Line -->
+  <path d="M 28 17 L 100 17 M 28 13 L 28 21 M 100 13 L 100 21" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round" />
+  <circle cx="64" cy="17" r="2.5" fill="#38BDF8" />
+</svg>

@@ -35,7 +35,7 @@ class FooterView extends StatelessWidget {
               // Conference Details & Affiliations
               const Text(
                 '16th International Civil Engineering Conference (ICEC-2026) • Karachi, Pakistan\n'
-                'Department of Civil Engineering, NED University of Engineering & Technology & Mehran University of Engineering and Technology (MUET)',
+                'Department of Civil Engineering, NED University of Engineering & Technology | Department of Software Engineering, Mehran University of Engineering and Technology (MUET)',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 11.5,
