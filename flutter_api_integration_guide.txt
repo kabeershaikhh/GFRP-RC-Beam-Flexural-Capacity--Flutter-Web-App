@@ -1,0 +1,149 @@
+================================================================================
+FLUTTER WEB TO FASTAPI INTEGRATION SPECIFICATION
+ICEC 2026 GFRP Beam Flexural Capacity Prediction Tool
+================================================================================
+
+1. ARCHITECTURE OVERVIEW
+--------------------------------------------------------------------------------
+Flutter Web acts as the presentation layer (Frontend UI) running in the user's
+web browser, while FastAPI acts as the computation server (Backend) running
+Python, scikit-learn, and the GFRP physics engine.
+
+Flutter never executes Python or machine learning models directly. Instead:
+- Flutter collects beam design parameters from the engineer via UI forms.
+- Flutter packages the data into a standard JSON string.
+- Flutter sends an asynchronous HTTP POST request over the network.
+- FastAPI processes the request using "model_ann.joblib" and "gfrp_rc_engine.py".
+- FastAPI returns the results in a structured JSON response.
+- Flutter parses the JSON and renders comparison cards and safety checks.
+
+
+2. NETWORK CONNECTION & ENDPOINT DETAILS
+--------------------------------------------------------------------------------
+- Communication Protocol: HTTP / HTTPS
+- HTTP Method: POST
+- API Base URL (Local Development): http://127.0.0.1:8000
+- API Base URL (Production / Cloud): https://your-domain.com
+- Prediction Endpoint Path: /predict
+- Full URL: http://127.0.0.1:8000/predict
+
+Required HTTP Request Headers:
+  Content-Type: application/json
+  Accept: application/json
+
+
+3. DATA SENT FROM FLUTTER TO FASTAPI (REQUEST PAYLOAD)
+--------------------------------------------------------------------------------
+Flutter must send a JSON object containing exactly 8 numerical fields:
+
+Field Name    Type     Unit   Allowed Range       Description
+--------------------------------------------------------------------------------
+b_mm          float    mm     150.0 to 400.0      Beam width
+h_mm          float    mm     300.0 to 900.0      Total beam depth
+cover_mm      float    mm     20.0 to 60.0        Clear concrete cover to stirrup
+fc_MPa        float    MPa    20.0 to 55.0        Concrete compressive strength
+Ef_GPa        float    GPa    40.0 to 65.0        GFRP bar elastic modulus
+ffu_MPa       float    MPa    700.0 to 900.0      GFRP ultimate tensile strength
+bar_dia_mm    float    mm     6.0 to 30.0         Bar diameter (e.g. 15.88 for #5)
+n_bars        int      count  2 to 8              Number of bottom tensile bars
+
+Example JSON payload sent by Flutter:
+{
+  "b_mm": 250.0,
+  "h_mm": 500.0,
+  "cover_mm": 35.0,
+  "fc_MPa": 35.0,
+  "Ef_GPa": 50.0,
+  "ffu_MPa": 800.0,
+  "bar_dia_mm": 15.88,
+  "n_bars": 4
+}
+
+
+4. DATA RETURNED FROM FASTAPI TO FLUTTER (RESPONSE PAYLOAD)
+--------------------------------------------------------------------------------
+Upon receiving the request, FastAPI returns HTTP status code 200 with the
+following JSON structure:
+
+{
+  "success": true,
+  "ai_prediction": {
+    "model_name": "Artificial Neural Network (MLP)",
+    "Mn_AI_kNm": 217.87,
+    "r2_score": 0.9982
+  },
+  "aci_benchmark": {
+    "standard": "ACI 440.1R-15",
+    "Mn_ACI_kNm": 209.21,
+    "ai_gain_percent": 4.14,
+    "failure_mode": "Concrete Crushing",
+    "rho_over_rho_b": 1.506,
+    "phi_factor": 0.65,
+    "design_phi_Mn_kNm": 135.98
+  },
+  "detailing_checks": {
+    "clear_spacing_mm": 32.5,
+    "spacing_ok": true,
+    "rho_min_ok": true,
+    "effective_depth_d_mm": 447.1
+  }
+}
+
+What Flutter extracts from this response:
+- "Mn_AI_kNm": The primary prediction to show on the main card.
+- "Mn_ACI_kNm": The code baseline for side-by-side comparison.
+- "ai_gain_percent": Shows how much conservative underestimation is recovered.
+- "failure_mode": Displayed as a badge (Concrete Crushing vs GFRP Rupture).
+- "design_phi_Mn_kNm": The actual factored strength engineers use for drawings.
+- "spacing_ok" & "rho_min_ok": Green/Red checkmarks showing constructability.
+
+
+5. STEP-BY-STEP LIFECYCLE OF A PREDICTION REQUEST
+--------------------------------------------------------------------------------
+Step 1: User Input
+The user enters values on the Flutter Web screen (using text input fields,
+sliders, or dropdown menus for standard bar sizes #3 through #8).
+
+Step 2: Pre-Transmission Validation (in Flutter)
+Before making the network call, Flutter ensures:
+- No fields are empty.
+- Values fall within prescribed engineering ranges.
+If invalid, Flutter shows an error message without contacting the server.
+
+Step 3: Serialization
+Flutter converts the 8 values into a JSON-formatted string.
+
+Step 4: Asynchronous HTTP Call
+Flutter triggers an HTTP POST request to "http://127.0.0.1:8000/predict"
+and displays a loading indicator (spinner) to the user.
+
+Step 5: Backend Execution
+FastAPI receives the payload:
+- Passes the 8 values through the StandardScaler and MLP neural network.
+- Passes the parameters through "gfrp_rc_engine.py" to calculate ACI 440.1R-15,
+  safety factors, failure mode, and reinforcement checks.
+- Returns the compiled JSON object.
+
+Step 6: Deserialization & State Update
+Flutter receives the response string, converts it back into key-value pairs,
+dismisses the loading spinner, and refreshes the UI dashboard with the results.
+
+
+6. CRITICAL TECHNICAL REQUIREMENTS FOR FLUTTER WEB
+--------------------------------------------------------------------------------
+1. CORS (Cross-Origin Resource Sharing):
+   Because Flutter Web runs inside a browser sandbox (e.g. at localhost:50000),
+   the browser will block requests to FastAPI (at localhost:8000) unless
+   FastAPI explicitly has CORSMiddleware enabled with "allow_origins=['*']".
+
+2. Error Handling:
+   Flutter must handle 3 potential error states:
+   - Server unreachable / Network error (e.g. backend is not started).
+   - HTTP 422 Unprocessable Entity (input failed validation rules).
+   - HTTP 500 Internal Server Error (server calculation exception).
+
+3. Localhost Addressing:
+   - For Flutter Web in browser: use "http://127.0.0.1:8000" or "http://localhost:8000".
+   - For Android Emulator (if ever tested on mobile): use "http://10.0.2.2:8000".
+   - For Physical Device: use the host PC's local LAN IP address (e.g. "http://192.168.1.X:8000").
+================================================================================
