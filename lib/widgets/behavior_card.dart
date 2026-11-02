@@ -42,8 +42,9 @@ class BehaviorCard extends StatelessWidget {
               ),
               const SizedBox(height: 14),
 
-              // Governing Failure Mode Status Badge
+              // Governing Failure Mode Status Badge (Full Row Width)
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: isCrushing ? AppTheme.crushingGreenBg : AppTheme.ruptureAmberBg,
@@ -102,21 +103,15 @@ class BehaviorCard extends StatelessWidget {
 
               const SizedBox(height: 14),
 
-              // Balanced Ratio & Factored Design Strength (Responsive Stack on Mobile)
+              // Balanced Ratio & Factored Design Strength (Full-Width Responsive Cards on Mobile)
               if (isMobile)
-                Column(
-                  children: [
-                    _buildBalancedRatioBox(aci, isCrushing),
-                    const SizedBox(height: 10),
-                    _buildFactoredStrengthBox(aci),
-                  ],
-                )
+                _buildMobileMetricsGroup(aci, isCrushing)
               else
                 Row(
                   children: [
-                    Expanded(child: _buildBalancedRatioBox(aci, isCrushing)),
+                    Expanded(child: _buildDesktopBalancedRatioBox(aci, isCrushing)),
                     const SizedBox(width: 12),
-                    Expanded(child: _buildFactoredStrengthBox(aci)),
+                    Expanded(child: _buildDesktopFactoredStrengthBox(aci)),
                   ],
                 ),
             ],
@@ -126,7 +121,187 @@ class BehaviorCard extends StatelessWidget {
     );
   }
 
-  Widget _buildBalancedRatioBox(AciBenchmark aci, bool isCrushing) {
+  /// Mobile metrics group: Enclosed container with full-width cards matching HeroCard layout
+  Widget _buildMobileMetricsGroup(AciBenchmark aci, bool isCrushing) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppTheme.borderSlate),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 1. Balanced Ratio Card (Full Row Width)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: (isCrushing ? AppTheme.crushingGreen : AppTheme.ruptureAmber).withValues(alpha: 0.35),
+                width: 1.2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: (isCrushing ? AppTheme.crushingGreen : AppTheme.ruptureAmber).withValues(alpha: 0.05),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: isCrushing ? AppTheme.crushingGreen : AppTheme.ruptureAmber,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Flexible(
+                            child: Text(
+                              'BALANCED RATIO (ρ / ρb)',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: AppTheme.secondarySteel,
+                                letterSpacing: 0.3,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        aci.rhoOverRhoB >= 1.0
+                            ? 'Over-reinforced (ρ > ρb)'
+                            : 'Under-reinforced (ρ < ρb)',
+                        style: const TextStyle(
+                          fontSize: 10.5,
+                          color: AppTheme.mutedSlate,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  aci.rhoOverRhoB.toStringAsFixed(3),
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w800,
+                    color: isCrushing ? AppTheme.crushingGreen : AppTheme.ruptureAmber,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          // 2. Factored Design Strength Card (Full Row Width)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppTheme.borderSlate),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(
+                              color: AppTheme.primarySteel,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Flexible(
+                            child: Text(
+                              'FACTORED STRENGTH (φMn)',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: AppTheme.secondarySteel,
+                                letterSpacing: 0.3,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        'Applied φ = ${aci.phiFactor.toStringAsFixed(2)} for drawings',
+                        style: const TextStyle(
+                          fontSize: 10.5,
+                          color: AppTheme.mutedSlate,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: aci.designPhiMnKNm.toStringAsFixed(1),
+                        style: const TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w800,
+                          color: AppTheme.primarySteel,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: ' kN·m',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.secondarySteel,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Desktop side-by-side Balanced Ratio Box
+  Widget _buildDesktopBalancedRatioBox(AciBenchmark aci, bool isCrushing) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -171,7 +346,8 @@ class BehaviorCard extends StatelessWidget {
     );
   }
 
-  Widget _buildFactoredStrengthBox(AciBenchmark aci) {
+  /// Desktop side-by-side Factored Strength Box
+  Widget _buildDesktopFactoredStrengthBox(AciBenchmark aci) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(

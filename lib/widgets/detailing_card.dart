@@ -125,9 +125,10 @@ class DetailingCard extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              // 2. Minimum Reinforcement & Effective Depth Grid (Responsive Stack on Mobile)
+              // 2. Minimum Reinforcement & Effective Depth Grid (Responsive Full Width on Mobile)
               if (isMobile)
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _buildMinReinforcementBox(detail),
                     const SizedBox(height: 8),
@@ -151,6 +152,7 @@ class DetailingCard extends StatelessWidget {
 
   Widget _buildMinReinforcementBox(DetailingChecks detail) {
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
@@ -199,6 +201,7 @@ class DetailingCard extends StatelessWidget {
 
   Widget _buildEffectiveDepthBox(DetailingChecks detail) {
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
